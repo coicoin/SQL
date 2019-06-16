@@ -1,0 +1,190 @@
+/*==============================================================*/
+/* DBMS name:      Microsoft Access 2007                        */
+/* Created on:     08.06.2019 16:35:40                          */
+/*==============================================================*/
+
+
+alter table Договор
+   drop constraint FK_ДОГОВОР_LAWYER_ПОСТАВЩИ;
+
+alter table Заказ
+   drop constraint FK_ЗАКАЗ_GOODS_ТОВАР;
+
+alter table Заказ
+   drop constraint FK_ЗАКАЗ_ORDER_ПОСТАВЩИ;
+
+alter table Зарплата
+   drop constraint FK_ЗАРПЛАТА_MONEY2_СОТРУДНИ;
+
+alter table Зарплата
+   drop constraint FK_ЗАРПЛАТА_STAFF_ACC_СЧЕТ;
+
+alter table Поставщик
+   drop constraint FK_ПОСТАВЩИ_SUPPLY_AC_СЧЕТ;
+
+alter table Премия
+   drop constraint FK_ПРЕМИЯ_RELATIONS_СОТРУДНИ;
+
+alter table Сотрудник
+   drop constraint FK_СОТРУДНИ_STAFF_ДОЛЖНОСТ;
+
+drop table Договор;
+
+drop table Должность;
+
+drop table Заказ;
+
+drop table Зарплата;
+
+drop table Поставщик;
+
+drop table Премия;
+
+drop table Сотрудник;
+
+drop table Счет;
+
+drop table Товар;
+
+/*==============================================================*/
+/* Table: Договор                                               */
+/*==============================================================*/
+create table Договор
+(
+    "Код договора"       COUNTER         not null,
+    "Код поставщика"     INTEGER         not null,
+    "Номер договора"     TEXT(10)        not null,
+    "Дата заключения"    DATE            not null,
+    "Сторона договора"   TEXT(20)        not null,
+constraint PK_ДОГОВОР primary key ("Код договора")
+);
+
+/*==============================================================*/
+/* Table: Должность                                             */
+/*==============================================================*/
+create table Должность
+(
+    "Код должности"      COUNTER         not null,
+    "Наименование должности" TEXT(20)        not null,
+    Количество           INTEGER         not null,
+    Оклад                CURRENCY        not null,
+constraint PK_ДОЛЖНОСТЬ primary key ("Код должности")
+);
+
+/*==============================================================*/
+/* Table: Заказ                                                 */
+/*==============================================================*/
+create table Заказ
+(
+    "Код поставщика"     INTEGER,
+    "Код товара"         INTEGER,
+    "Номер заказа"       INTEGER         not null,
+    "Сумма в рублях"     CURRENCY        not null,
+    Количество           INTEGER
+);
+
+/*==============================================================*/
+/* Table: Зарплата                                              */
+/*==============================================================*/
+create table Зарплата
+(
+    "Код сотрудника"     INTEGER,
+    "Код счета"          INTEGER,
+    Оклад                CURRENCY        not null,
+    "Дата выдачи"        DATE            not null,
+    Выдана               YESNO           not null
+);
+
+/*==============================================================*/
+/* Table: Поставщик                                             */
+/*==============================================================*/
+create table Поставщик
+(
+    "Код поставщика"     COUNTER         not null,
+    "Код счета"          INTEGER,
+    Наименование         TEXT(30)        not null,
+    "Юридический адрес"  TEXT(30)        not null,
+constraint PK_ПОСТАВЩИК primary key ("Код поставщика")
+);
+
+/*==============================================================*/
+/* Table: Премия                                                */
+/*==============================================================*/
+create table Премия
+(
+    "Код сотрудника"     INTEGER,
+    Премия               CURRENCY        not null,
+    "Дата выдачи"        DATE            not null,
+    Выдана               YESNO           not null
+);
+
+/*==============================================================*/
+/* Table: Сотрудник                                             */
+/*==============================================================*/
+create table Сотрудник
+(
+    "Код сотрудника"     COUNTER         not null,
+    "Код должности"      INTEGER,
+    Фамилия              TEXT(20)        not null,
+    Имя                  TEXT(20)        not null,
+    Отчество             TEXT(20)        not null,
+    "Дата рождения"      DATE            not null,
+    "Место рождения"     TEXT(30)        not null,
+constraint PK_СОТРУДНИК primary key ("Код сотрудника")
+);
+
+/*==============================================================*/
+/* Table: Счет                                                  */
+/*==============================================================*/
+create table Счет
+(
+    "Код счета"          COUNTER         not null,
+    "Номер счета"        TEXT(24)        not null,
+    Банк                 TEXT(20)        not null,
+constraint PK_СЧЕТ primary key ("Код счета")
+);
+
+/*==============================================================*/
+/* Table: Товар                                                 */
+/*==============================================================*/
+create table Товар
+(
+    Наименование         TEXT(30)        not null,
+    Цена                 CURRENCY        not null,
+    Количество           INTEGER         not null,
+    "Код товара"         COUNTER         not null,
+constraint PK_ТОВАР primary key ("Код товара")
+);
+
+alter table Договор
+   add constraint FK_ДОГОВОР_LAWYER_ПОСТАВЩИ foreign key ("Код поставщика")
+      references Поставщик ("Код поставщика");
+
+alter table Заказ
+   add constraint FK_ЗАКАЗ_GOODS_ТОВАР foreign key ("Код товара")
+      references Товар ("Код товара");
+
+alter table Заказ
+   add constraint FK_ЗАКАЗ_ORDER_ПОСТАВЩИ foreign key ("Код поставщика")
+      references Поставщик ("Код поставщика");
+
+alter table Зарплата
+   add constraint FK_ЗАРПЛАТА_MONEY2_СОТРУДНИ foreign key ("Код сотрудника")
+      references Сотрудник ("Код сотрудника");
+
+alter table Зарплата
+   add constraint FK_ЗАРПЛАТА_STAFF_ACC_СЧЕТ foreign key ("Код счета")
+      references Счет ("Код счета");
+
+alter table Поставщик
+   add constraint FK_ПОСТАВЩИ_SUPPLY_AC_СЧЕТ foreign key ("Код счета")
+      references Счет ("Код счета");
+
+alter table Премия
+   add constraint FK_ПРЕМИЯ_RELATIONS_СОТРУДНИ foreign key ("Код сотрудника")
+      references Сотрудник ("Код сотрудника");
+
+alter table Сотрудник
+   add constraint FK_СОТРУДНИ_STAFF_ДОЛЖНОСТ foreign key ("Код должности")
+      references Должность ("Код должности");
+
